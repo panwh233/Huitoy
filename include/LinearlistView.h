@@ -1,3 +1,8 @@
+/*
+This class is a view of a linear list. It's an array of pointers of class T. Different from simple array of pointers 
+of class T. LinearlistView can be used more conveniently.  
+*/
+
 #include "LinearlistViewIterator.h"
 #include "illegalParameterValue.h"
 #ifndef LINEARLISTVIEW_H
@@ -7,42 +12,42 @@ template <class T>
 class LinearlistView
 {
     public:
-        /*¹¹Ôìº¯Êı*/
+        /*Constructor of LinearlistView*/
         LinearlistView(unsigned initial_capacity=5,float expand_factor=1.5);
         LinearlistView(const LinearlistView& view,float expand_factor=1.5);
         LinearlistView(LinearlistView&& view,float expand_factor=1.5) noexcept;
         LinearlistView(T* Tarray,unsigned n,float expand_factor=1.5);
         LinearlistView(T** Tpointer_array,unsigned n,float expand_factor=1.5);
-        /*Îö¹¹º¯Êı*/
+        /*Destructor of LinearlistView*/
         virtual ~LinearlistView();
-        /*ÊÓÍ¼Ïà¹Ø²ÎÊı*/
+        /*Parameters of LinearlistView*/
         bool change_expand_factor(float new_expand_facotr);
         void changeSize(unsigned newSize,bool copy_=true);
         float expandFactor();
         bool empty() const;
         unsigned size() const;
         unsigned capacity() const;
-        /*Çå¿ÕÊÓÍ¼*/
+        /*clear the LinearlistView*/
         void clear();
-        /*Ë÷Òı*/
+        /*Get element with index*/
         T& operator[] (unsigned index) const;
         T*& operator() (unsigned index);
-        /*°´ÕÕÔªËØÕÒË÷Òı*/
+        /*find index of an element*/
         unsigned search(const T& element) const;
-        /*É¾³ıÔªËØ*/
+        /*erase an element*/
         void erase(unsigned index);
         void eraseback();
         void erasefront();
-        /*²åÈëÔªËØ*/
+        /*insert an element*/
         void insert(unsigned index,T* const& element);
         void insertback(T* const& element);
         void insertfront(T* const& element);
-        /*ÊÓÍ¼µÄ¸³Öµ*/
+        /*copy an view*/
         LinearlistView& operator = (const LinearlistView& view);
         LinearlistView& operator = (LinearlistView&& view) noexcept;
         LinearlistView& copy(T* Tarray,unsigned n);
         LinearlistView& copy(T** Tpointer_array,unsigned n);
-        /*ÊÓÍ¼µÄ±éÀú*/
+        /*iterators of the view*/
         LinearlistViewIterator<T> begin() const;
         LinearlistViewIterator<T> end() const;
     protected:
@@ -52,7 +57,7 @@ class LinearlistView
         float expand_factor;
         void changeLength(unsigned newCapacity,bool copy_ = true);
 };
-/*¹¹Ôìº¯Êı*/
+/*Implement of constructors*/
 template <class T>
 LinearlistView<T>::LinearlistView(unsigned initial_capacity,float new_expand_factor){
     if(new_expand_factor<=1) throw illegalParameterValue("Expand factor must be larger than 1.");
@@ -127,12 +132,12 @@ LinearlistView<T>::LinearlistView(LinearlistView&& view,float new_expand_factor)
     listCapacity = view.listCapacity;
     view.listCapacity = 0;
 }
-/*Îö¹¹º¯Êı*/
+/*Implementation of the destructor*/
 template <class T>
 LinearlistView<T>::~LinearlistView(){
     if(listCapacity>=1) delete[] pointer_array;
 }
-/*ÏßĞÔ±íÊÓÍ¼µÄÏà¹Ø²ÎÊı*/
+/*get*/
 template <class T>
 bool LinearlistView<T>::change_expand_factor(float new_expand_factor){
     if(listCapacity<=1) return false;
@@ -143,27 +148,27 @@ bool LinearlistView<T>::change_expand_factor(float new_expand_factor){
 template <class T>
 void LinearlistView<T>::changeLength(unsigned newCapacity,bool copy_){
     if (newCapacity == listCapacity){
-        //ÇéĞÎ1£ºÈç¹ûĞÂ³¤¶ÈºÍÔ­À´µÄ³¤¶ÈÏàµÈ£¬ÄÇÃ´²»×öÈÎºÎ²Ù×÷
+        //æƒ…å½¢1ï¼šå¦‚æœæ–°é•¿åº¦å’ŒåŸæ¥çš„é•¿åº¦ç›¸ç­‰ï¼Œé‚£ä¹ˆä¸åšä»»ä½•æ“ä½œ
         return;
     }
     if (newCapacity == 0) {
-        //ÇéĞÎ2£ºÈç¹ûĞÂ³¤¶ÈÎª0£¬ËµÃ÷ÎÒÃÇÒªÇå¿ÕÊı×é£¬ÔòÖ±½ÓÉ¾µôelement£¬È»ºóÈÃlistCapacityºÍlistSize¶¼Îª0
+        //æƒ…å½¢2ï¼šå¦‚æœæ–°é•¿åº¦ä¸º0ï¼Œè¯´æ˜æˆ‘ä»¬è¦æ¸…ç©ºæ•°ç»„ï¼Œåˆ™ç›´æ¥åˆ æ‰elementï¼Œç„¶åè®©listCapacityå’ŒlistSizeéƒ½ä¸º0
         delete[] pointer_array;
         pointer_array = nullptr;
         listCapacity = 0;
         listSize = 0;
         return;
     }
-    //·ñÔò£¬ÔòÊÇnewCapacityºÍoldCapacity²»µÈ
+    //å¦åˆ™ï¼Œåˆ™æ˜¯newCapacityå’ŒoldCapacityä¸ç­‰
     T** temp = new T*[newCapacity];
-    if(copy_){//Èç¹û²ÉÓÃcopyÄ£Ê½£¬Ôò½«Ô­Êı×éÖĞÓĞÒâÒåµÄÔªËØ¸´ÖÆµ½ĞÍÊı×éÖĞ
+    if(copy_){//å¦‚æœé‡‡ç”¨copyæ¨¡å¼ï¼Œåˆ™å°†åŸæ•°ç»„ä¸­æœ‰æ„ä¹‰çš„å…ƒç´ å¤åˆ¶åˆ°å‹æ•°ç»„ä¸­
         for(unsigned i = 0;i<listSize&&i<newCapacity;i++){
             temp[i] = pointer_array[i];
         }
     }
-    //Èç¹ûÀÏÊı×é³¤¶È´óÓÚ0£¬Ôò½«ÀÏÊı×éÊÍ·Åµô
+    //å¦‚æœè€æ•°ç»„é•¿åº¦å¤§äº0ï¼Œåˆ™å°†è€æ•°ç»„é‡Šæ”¾æ‰
     if (listCapacity > 0) delete pointer_array;
-    //½ÓÏÂÀ´ÇólistSize£¬Èç¹ûlistSize±ÈnewCapacityÒª´ó£¬ËµÃ÷Ô­À´µÄÔªËØÓĞÉ¾¼õ£¬·ñÔòÖ»ÓÃ¸Ä±älistCapacity£¬²»ÓÃ¸Ä±älistSize
+    //æ¥ä¸‹æ¥æ±‚listSizeï¼Œå¦‚æœlistSizeæ¯”newCapacityè¦å¤§ï¼Œè¯´æ˜åŸæ¥çš„å…ƒç´ æœ‰åˆ å‡ï¼Œå¦åˆ™åªç”¨æ”¹å˜listCapacityï¼Œä¸ç”¨æ”¹å˜listSize
     if (listSize>= newCapacity){
         listSize = newCapacity;
         listCapacity = newCapacity;
@@ -216,7 +221,7 @@ unsigned LinearlistView<T>::search(const T& element) const{
     }
     return result;
 }
-/*´ÓÊÓÍ¼ÖĞÉ¾µôÒ»¸öÔªËØ*/
+/*ä»è§†å›¾ä¸­åˆ æ‰ä¸€ä¸ªå…ƒç´ */
 template <class T>
 void LinearlistView<T>::erase(unsigned index){
     if (index >= listSize){
@@ -241,7 +246,7 @@ template <class T>
 void LinearlistView<T>::erasefront(){
     erase(0);
 }
-/*´ÓÊÓÍ¼ÖĞ²åÈëÒ»¸öÔªËØ*/
+/*ä»è§†å›¾ä¸­æ’å…¥ä¸€ä¸ªå…ƒç´ */
 template <class T>
 void LinearlistView<T>::insert(unsigned index,T* const& element_){
     if (index > listSize){
@@ -349,7 +354,7 @@ LinearlistViewIterator<T> LinearlistView<T>::end() const{
 template <class T>
 class ConstLinearlistView{
     public:
-        /*¹¹Ôìº¯Êı*/
+        /*æ„é€ å‡½æ•°*/
         ConstLinearlistView(unsigned inital_capacity=5,float expand_factor=1.5);
         ConstLinearlistView(const LinearlistView<T>& view,float expand_factor=1.5);
         ConstLinearlistView(const ConstLinearlistView& view,float expand_factor=1.5);
@@ -357,38 +362,38 @@ class ConstLinearlistView{
         ConstLinearlistView(T** Tpointer_array,unsigned n,float expand_factor=1.5);
         ConstLinearlistView(const T** Tpointer_array,unsigned n,float expand_factor=1.5);
         ConstLinearlistView(const T* Tarray,unsigned n,float expand_factor=1.5);
-        /*Îö¹¹º¯Êı*/
+        /*ææ„å‡½æ•°*/
         virtual ~ConstLinearlistView();
-        /*ÊÓÍ¼Ïà¹Ø²ÎÊı*/
+        /*è§†å›¾ç›¸å…³å‚æ•°*/
         bool change_expand_factor(float new_expand_facotr);
         void changeSize(unsigned newSize,bool copy_=true);
         float expandFactor();
         bool empty() const;
         unsigned size() const;
         unsigned capacity() const;
-        /*Çå¿ÕÊÓÍ¼*/
+        /*æ¸…ç©ºè§†å›¾*/
         void clear();
-        /*Ë÷Òı*/
+        /*ç´¢å¼•*/
         const T& operator[] (unsigned index) const;
         const T*& operator() (unsigned index);
-        /*°´ÕÕÔªËØÕÒË÷Òı*/
+        /*æŒ‰ç…§å…ƒç´ æ‰¾ç´¢å¼•*/
         unsigned search(const T& element) const;
-        /*É¾³ıÔªËØ*/
+        /*åˆ é™¤å…ƒç´ */
         void erase(unsigned index);
         void eraseback();
         void erasefront();
-        /*²åÈëÔªËØ*/
+        /*æ’å…¥å…ƒç´ */
         void insert(unsigned index,const T* const & element);
         void insertback(const T* const & element);
         void insertfront(const T* const & element);
-        /*ÊÓÍ¼µÄ¸³Öµ*/
+        /*è§†å›¾çš„èµ‹å€¼*/
         ConstLinearlistView& operator = (const LinearlistView<T>& view);
         ConstLinearlistView& operator = (const ConstLinearlistView& view);
         ConstLinearlistView& operator = (ConstLinearlistView&& view) noexcept;
         ConstLinearlistView& copy(const T** Tpointer_array,unsigned n);
         ConstLinearlistView& copy(T** Tpointer_array,unsigned n);
         ConstLinearlistView& copy(const T* Tarray,unsigned n);
-        /*ÊÓÍ¼µÄ±éÀú*/
+        /*è§†å›¾çš„éå†*/
         ConstLinearlistViewIterator<T> begin() const;
         ConstLinearlistViewIterator<T> end() const;
     protected:
@@ -399,8 +404,8 @@ class ConstLinearlistView{
         void changeLength(unsigned newLength,bool copy_ = true);
 };
 
-/*¹¹Ôìº¯Êı*/
-/*¹¹Ôìº¯Êı1£ºÄ¬ÈÏ¹¹Ôìº¯Êı*/
+/*æ„é€ å‡½æ•°*/
+/*æ„é€ å‡½æ•°1ï¼šé»˜è®¤æ„é€ å‡½æ•°*/
 template <class T>
 ConstLinearlistView<T>::ConstLinearlistView(unsigned initial_capacity,float new_expand_factor){
     if(new_expand_factor<=1) throw "Expand factor must be larger than 1.";
@@ -417,7 +422,7 @@ ConstLinearlistView<T>::ConstLinearlistView(unsigned initial_capacity,float new_
         }
     }
 }
-/*¹¹Ôìº¯Êı2£ºÓÃLinearlistView³õÊ¼»¯ConstLinearlistView*/
+/*æ„é€ å‡½æ•°2ï¼šç”¨LinearlistViewåˆå§‹åŒ–ConstLinearlistView*/
 template <class T>
 ConstLinearlistView<T>::ConstLinearlistView(const LinearlistView<T>& view,float new_expand_factor){
     if(new_expand_factor<=1) throw "Expand factor must  be larger than 1.";
@@ -435,7 +440,7 @@ ConstLinearlistView<T>::ConstLinearlistView(const LinearlistView<T>& view,float 
         }
     }
 }
-/*¹¹Ôìº¯Êı3£º¸´ÖÆ¹¹Ôìº¯Êı*/
+/*æ„é€ å‡½æ•°3ï¼šå¤åˆ¶æ„é€ å‡½æ•°*/
 template <class T>
 ConstLinearlistView<T>::ConstLinearlistView(const ConstLinearlistView& view,float new_expand_factor){
     if(new_expand_factor<=1) throw "Expand factor must  be larger than 1.";
@@ -453,7 +458,7 @@ ConstLinearlistView<T>::ConstLinearlistView(const ConstLinearlistView& view,floa
         }
     }
 }
-/*¹¹Ôìº¯Êı4£ºÓÃÖ¸ÕëµÄÊı×é³õÊ¼»¯ConstLinearlistView*/
+/*æ„é€ å‡½æ•°4ï¼šç”¨æŒ‡é’ˆçš„æ•°ç»„åˆå§‹åŒ–ConstLinearlistView*/
 template <class T>
 ConstLinearlistView<T>::ConstLinearlistView(T** Tarray,unsigned n,float new_expand_factor){
     if(new_expand_factor<=1) throw "Expand factor must be larger than 1!";
@@ -469,7 +474,7 @@ ConstLinearlistView<T>::ConstLinearlistView(T** Tarray,unsigned n,float new_expa
         }
     }
 }
-/*¹¹Ôìº¯Êı5£ºÓÃÖ¸Ïò³£Á¿µÄÖ¸ÕëµÄÊı×éÀ´³õÊ¼»¯ConstLinearlistView*/
+/*æ„é€ å‡½æ•°5ï¼šç”¨æŒ‡å‘å¸¸é‡çš„æŒ‡é’ˆçš„æ•°ç»„æ¥åˆå§‹åŒ–ConstLinearlistView*/
 template <class T>
 ConstLinearlistView<T>::ConstLinearlistView(const T** Tarray,unsigned n,float new_expand_factor){
     if(new_expand_factor<=1) throw "Expand factor must be larger than 1!";
@@ -485,7 +490,7 @@ ConstLinearlistView<T>::ConstLinearlistView(const T** Tarray,unsigned n,float ne
         }
     }
 }
-/*¹¹Ôìº¯Êı6£ºÓÃTµÄÊı×é³õÊ¼»¯ConstLinearlistView*/
+/*æ„é€ å‡½æ•°6ï¼šç”¨Tçš„æ•°ç»„åˆå§‹åŒ–ConstLinearlistView*/
 template <class T>
 ConstLinearlistView<T>::ConstLinearlistView(const T* Tarray,unsigned n,float new_expand_factor){
     if(new_expand_factor<=1) throw "Expand factor must be larger than 1!";
@@ -501,7 +506,7 @@ ConstLinearlistView<T>::ConstLinearlistView(const T* Tarray,unsigned n,float new
         }
     }
 }
-/*¹¹Ôìº¯Êı7£ºÒÆ¶¯¹¹Ôìº¯Êı*/
+/*æ„é€ å‡½æ•°7ï¼šç§»åŠ¨æ„é€ å‡½æ•°*/
 template <class T>
 ConstLinearlistView<T>::ConstLinearlistView(ConstLinearlistView&& view,float new_expand_factor) noexcept{
     if(new_expand_factor<=1) expand_factor = 1.5;
@@ -514,12 +519,12 @@ ConstLinearlistView<T>::ConstLinearlistView(ConstLinearlistView&& view,float new
     pointer_array = view.pointer_array;
     view.pointer_array = nullptr;
 }
-/*Îö¹¹º¯Êı*/
+/*ææ„å‡½æ•°*/
 template <class T>
 ConstLinearlistView<T>::~ConstLinearlistView(){
     if(listCapacity>=1) delete[] pointer_array;
 }
-/*ÏßĞÔ±íÊÓÍ¼µÄÏà¹Ø²ÎÊı*/
+/*çº¿æ€§è¡¨è§†å›¾çš„ç›¸å…³å‚æ•°*/
 template <class T>
 bool ConstLinearlistView<T>::change_expand_factor(float new_expand_factor){
     if(listCapacity<=1) return false;
@@ -530,27 +535,27 @@ bool ConstLinearlistView<T>::change_expand_factor(float new_expand_factor){
 template <class T>
 void ConstLinearlistView<T>::changeLength(unsigned newCapacity,bool copy_){
     if (newCapacity == listCapacity){
-        //ÇéĞÎ1£ºÈç¹ûĞÂ³¤¶ÈºÍÔ­À´µÄ³¤¶ÈÏàµÈ£¬ÄÇÃ´²»×öÈÎºÎ²Ù×÷
+        //æƒ…å½¢1ï¼šå¦‚æœæ–°é•¿åº¦å’ŒåŸæ¥çš„é•¿åº¦ç›¸ç­‰ï¼Œé‚£ä¹ˆä¸åšä»»ä½•æ“ä½œ
         return;
     }
     if (newCapacity == 0) {
-        //ÇéĞÎ2£ºÈç¹ûĞÂ³¤¶ÈÎª0£¬ËµÃ÷ÎÒÃÇÒªÇå¿ÕÊı×é£¬ÔòÖ±½ÓÉ¾µôelement£¬È»ºóÈÃlistCapacityºÍlistSize¶¼Îª0
+        //æƒ…å½¢2ï¼šå¦‚æœæ–°é•¿åº¦ä¸º0ï¼Œè¯´æ˜æˆ‘ä»¬è¦æ¸…ç©ºæ•°ç»„ï¼Œåˆ™ç›´æ¥åˆ æ‰elementï¼Œç„¶åè®©listCapacityå’ŒlistSizeéƒ½ä¸º0
         delete[] pointer_array;
         pointer_array = nullptr;
         listCapacity = 0;
         listSize = 0;
         return;
     }
-    //·ñÔò£¬ÔòÊÇnewCapacityºÍoldCapacity²»µÈ
+    //å¦åˆ™ï¼Œåˆ™æ˜¯newCapacityå’ŒoldCapacityä¸ç­‰
     const T** temp = new const T*[newCapacity];
-    if(copy_){//Èç¹û²ÉÓÃcopyÄ£Ê½£¬Ôò½«Ô­Êı×éÖĞÓĞÒâÒåµÄÔªËØ¸´ÖÆµ½ĞÍÊı×éÖĞ
+    if(copy_){//å¦‚æœé‡‡ç”¨copyæ¨¡å¼ï¼Œåˆ™å°†åŸæ•°ç»„ä¸­æœ‰æ„ä¹‰çš„å…ƒç´ å¤åˆ¶åˆ°å‹æ•°ç»„ä¸­
         for(unsigned i = 0;i<listSize&&i<newCapacity;i++){
             temp[i] = pointer_array[i];
         }
     }
-    //Èç¹ûÀÏÊı×é³¤¶È´óÓÚ0£¬Ôò½«ÀÏÊı×éÊÍ·Åµô
+    //å¦‚æœè€æ•°ç»„é•¿åº¦å¤§äº0ï¼Œåˆ™å°†è€æ•°ç»„é‡Šæ”¾æ‰
     if (listCapacity > 0) delete pointer_array;
-    //½ÓÏÂÀ´ÇólistSize£¬Èç¹ûlistSize±ÈnewCapacityÒª´ó£¬ËµÃ÷Ô­À´µÄÔªËØÓĞÉ¾¼õ£¬·ñÔòÖ»ÓÃ¸Ä±älistCapacity£¬²»ÓÃ¸Ä±älistSize
+    //æ¥ä¸‹æ¥æ±‚listSizeï¼Œå¦‚æœlistSizeæ¯”newCapacityè¦å¤§ï¼Œè¯´æ˜åŸæ¥çš„å…ƒç´ æœ‰åˆ å‡ï¼Œå¦åˆ™åªç”¨æ”¹å˜listCapacityï¼Œä¸ç”¨æ”¹å˜listSize
     if (listSize>= newCapacity){
         listSize = newCapacity;
         listCapacity = newCapacity;
@@ -603,7 +608,7 @@ unsigned ConstLinearlistView<T>::search(const T& element) const{
     }
     return result;
 }
-/*´ÓÊÓÍ¼ÖĞÉ¾µôÒ»¸öÔªËØ*/
+/*ä»è§†å›¾ä¸­åˆ æ‰ä¸€ä¸ªå…ƒç´ */
 template <class T>
 void ConstLinearlistView<T>::erase(unsigned index){
     if (index >= listSize){
@@ -628,7 +633,7 @@ template <class T>
 void ConstLinearlistView<T>::erasefront(){
     erase(0);
 }
-/*´ÓÊÓÍ¼ÖĞ²åÈëÒ»¸öÔªËØ*/
+/*ä»è§†å›¾ä¸­æ’å…¥ä¸€ä¸ªå…ƒç´ */
 template <class T>
 void ConstLinearlistView<T>::insert(unsigned index,const T* const& element_){
     if (index > listSize){
