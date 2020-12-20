@@ -10,21 +10,21 @@ class LinkedbinaryTreeNode
         LinkedbinaryTreeNode(const T& element_=T(),LinkedbinaryTreeNode<T>* leftChild_ = nullptr,LinkedbinaryTreeNode<T>* rightChild_=nullptr);
         LinkedbinaryTreeNode(const LinkedbinaryTreeNode& node);
         LinkedbinaryTreeNode(LinkedbinaryTreeNode&& node) noexcept;
-        //»ñÈ¡×óÓÒ×ÓÊ÷µÄÖ¸Õë
+        //è·å–å·¦å³å­æ ‘çš„æŒ‡é’ˆ
         LinkedbinaryTreeNode<T>* getLeftChild();
         const LinkedbinaryTreeNode<T>* getLeftChild() const;
         LinkedbinaryTreeNode<T>* getRightChild();
         const LinkedbinaryTreeNode<T>* getRightChild() const;
-        //¸Ä±ä×óÓÒ×ÓÊ÷
+        //æ”¹å˜å·¦å³å­æ ‘
         void changeLeftChild(LinkedbinaryTreeNode<T>* leftChild_);
         void changeRightChild(LinkedbinaryTreeNode<T>* rightChild_);
-        //»ñÈ¡¸Ã½áµãµÄÔªËØ
+        //è·å–è¯¥ç»“ç‚¹çš„å…ƒç´ 
         T& get();
         const T& get() const;
-        //»ñÈ¡¸Ã½áµãµÄ²ÎÊı
+        //è·å–è¯¥ç»“ç‚¹çš„å‚æ•°
         unsigned size() const;
         unsigned depth() const;
-        //±éÀú
+        //éå†
         void preOrder(const std::function<void(T&)>& visit);
         void inOrder(const std::function<void(T&)>& visit);
         void postOrder(const std::function<void(T&)>& visit);
@@ -33,11 +33,11 @@ class LinkedbinaryTreeNode
         void inOrder(const std::function<void(const T&)>& visit) const;
         void postOrder(const std::function<void(const T&)>& visit) const;
         void levelOrder(const std::function<void(const T&)>& visit) const;
-        //Çå³ı½áµãÒÔ¼°Îö¹¹º¯Êı
+        //æ¸…é™¤ç»“ç‚¹ä»¥åŠææ„å‡½æ•°
         ~LinkedbinaryTreeNode();
         void clearLeftChild();
         void clearRightChild();
-        //Éî¸´ÖÆ½áµã
+        //æ·±å¤åˆ¶ç»“ç‚¹
         void copy(const LinkedbinaryTreeNode<T>* node);
         LinkedbinaryTreeNode<T>& operator=(const LinkedbinaryTreeNode<T>& tree);
         LinkedbinaryTreeNode<T>& operator=(LinkedbinaryTreeNode<T>&& tree) noexcept;
@@ -121,7 +121,7 @@ unsigned LinkedbinaryTreeNode<T>::depth() const{
     if(leftChild_depth>=rightChild_depth) return 1+leftChild_depth;
     else return 1+rightChild_depth;
 }
-//±éÀúÊ÷
+//éå†æ ‘
 template <class T>
 void LinkedbinaryTreeNode<T>::preOrder(const std::function<void(T&)>& visit){
     visit(element);
@@ -183,7 +183,7 @@ void LinkedbinaryTreeNode<T>::levelOrder(const std::function<void(const T&)>& vi
         if(node->getRightChild()!=nullptr) queue_.push(node->getRightChild());
     }
 }
-//Îö¹¹º¯ÊıÓëÇå³ı
+//ææ„å‡½æ•°ä¸æ¸…é™¤
 template<class T>
 LinkedbinaryTreeNode<T>::~LinkedbinaryTreeNode(){
     if(leftChild!=nullptr) delete leftChild;
@@ -199,7 +199,7 @@ void LinkedbinaryTreeNode<T>::clearRightChild(){
     if(rightChild!=nullptr) delete rightChild;
     rightChild = nullptr;
 }
-//Éî¸´ÖÆ½áµã
+//æ·±å¤åˆ¶ç»“ç‚¹
 template <class T>
 void LinkedbinaryTreeNode<T>::copy(const LinkedbinaryTreeNode<T>* node){
     if(node==nullptr) return;
@@ -217,7 +217,7 @@ void LinkedbinaryTreeNode<T>::copy(const LinkedbinaryTreeNode<T>* node){
 }
 template <class T>
 LinkedbinaryTreeNode<T>& LinkedbinaryTreeNode<T>::operator = (const LinkedbinaryTreeNode& node){
-    element = node->get();
+    element = node.get();
     clearLeftChild();
     clearRightChild();
     if(node->getLeftChild()){
@@ -241,5 +241,5 @@ LinkedbinaryTreeNode<T>& LinkedbinaryTreeNode<T>::operator = (LinkedbinaryTreeNo
     node.rightChild = nullptr;
     return *this;
 }
-}//ÃüÃû¿Õ¼ä½áÊø
+}//å‘½åç©ºé—´ç»“æŸ
 #endif // LINKEDBINARYTREENODE_H
